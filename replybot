@@ -1,0 +1,47 @@
+#!/usr/local/bin/python3.5
+
+import tweepy
+
+def readID():
+    file = open('lastid', 'r')
+    str = file.read()
+    file.close()
+    
+    return str
+
+def writeID(newID):
+    file = open('lastid', 'w')
+    file.write(str(newID))
+    file.close
+    
+def respond(api, tweetID):
+    #Read random fact
+    reply_str = ""
+    api.update_status(reply_str, in_reply_to_status_id = tweetID)
+
+def getTweetID(api, handle):
+    timeline = api.user_timeline(handle, count = 1)
+    return timeline[0].id
+
+# Keys for script
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = ''
+
+#Authorize the script
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+#Get the api object and twitter handle 
+api = tweepy.API(auth)
+handle = ''
+
+#Read id from file and timeline
+lastID = int(readID())
+tweetID = getTweetID(api, handle)
+
+if lastID < tweetID:
+    respond(api, tweetID)
+    writeID(tweetID)
+ 
